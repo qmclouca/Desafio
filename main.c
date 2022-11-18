@@ -1,45 +1,47 @@
+#include <string.h>
 #include <stdio.h>
 #include "searchPattern.h"
 #include "substringSearch.h"
 
 int main(int argc, char* argv[]) {
-    char const* const fileName = "D:\\Desafio\\calana.txt";
-    char searchQuery[255];
-    char searchQueryFiltered[255];
-    int position, firstMarkerPosition, lastMarkerPosition;
+    char path[255];
+    char tag[255];
+    int position, count=0;
 
-    printf("Informe o padrão a ser buscado: \n");
-    gets(searchQuery);
-
-    firstMarkerPosition = matchPattern(searchQuery, "*");
-    if (firstMarkerPosition != -1){
-        searchQueryFiltered = searchQuery[firstMarkerPosition+1,strlen(&searchQueryFiltered)-1];
-        printf("Posição da primeira ocorrência do marcador: %d\n",firstMarkerPosition+1);
-        printf("searchQueryFiltrada: %s\n",searchQueryFiltered);
+    if (argc == 1){
+        printf ("Digite uma linha com os seguintes elementos, e na ordem numerica indicada:\n");
+        printf ("1 - TAG a ser buscada;\n");
+        printf ("2 - Path completo dos arquivos, sem \\ no final;\n");
+        printf ("3 - Nomes dos arquivos a serem processados;\n");
+        printf ("4 - todos os itens (1, 2 e 3), devem estar separados por espacos;\n");
+        printf ("Ex: Desafio.exe DVLD1TFP_CA c:\\arquivos calana.txt caldig.txt\n");
+        return 0;
     }
+    strcpy(tag, argv[1]);
 
-
-
-    FILE* file = fopen(fileName, "r");
-
-    if(!file){
-        printf("\n Unable to open: %s ", fileName);
-        return -1;
-    }
-
-    char line[255];
-
-    while (fgets(line, sizeof (line), file)){
-        position = matchPattern(line, searchQuery);
-        if (position != -1){
-            printf("Primeira ocorrência: %d\n", position + 1);
+    for (count=0; count+3<argc; count++){
+        memset(path,0,sizeof (path));
+        strcat(path,argv[2]);
+        strcat(path,"\\");
+        strcat(path,argv[count+3]);
+        FILE* file = fopen(path, "r");
+        if(!file){
+            printf("\n Unable to open: %s ", path);
+            return -1;
         }
-        else {
-            printf("Not found.\n");
-        }
-    }
 
-    fclose(file);
+        char line[255];
+        printf("arquivo %s: \n", argv[count+3]);
+
+        while (fgets(line, sizeof (line), file)){
+            position = matchPattern(line, tag);
+            if (position != -1){
+                printf(line);
+                position = -1;
+            }
+        }
+        fclose(file);
+    }
     return 0;
 }
 
