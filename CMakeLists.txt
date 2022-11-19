@@ -3,4 +3,4 @@ project(Desafio C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(Desafio main.c searchPattern.h substringSearch.h)
+add_executable(Desafio main.c)
